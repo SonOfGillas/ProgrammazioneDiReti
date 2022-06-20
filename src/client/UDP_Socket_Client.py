@@ -10,7 +10,8 @@ server_address = ('localhost', 10000)
 
 def checkEndingMessage(data):
   response=data.decode('utf8').split();
-  isEnding = response[len(response)-1]=='\r\n\r\n'
+  isEnding = response[len(response)-1]=='end'
+  
   if isEnding:
       code = response[1]
       message = response[2]

@@ -30,9 +30,8 @@ while True:
             filePath=os.path.join(os.getcwd(), data.decode('utf8'))
             file = open(filePath, 'w')
             data, address = sock.recvfrom(4096)
-            print (data.decode('utf8'))
             file.write(data.decode('utf8'))
-            serverResponse='HTTP/1.1 201 File_Uploaded \r\n\r\n'
+            serverResponse='HTTP/1.1 201 File_Uploaded end'
             sent = sock.sendto(serverResponse.encode(), address)
             print('file uploaded')
     
@@ -47,7 +46,7 @@ while True:
                 sent = sock.sendto(serverFileList[i].encode('utf8'), address)
                 pass
             
-            serverResponse='HTTP/1.1 200 File_List_Sended \r\n\r\n'
+            serverResponse='HTTP/1.1 200 File_List_Sended end'
             sent = sock.sendto(serverResponse.encode(), address)
             print('file list sended')
             
@@ -64,14 +63,14 @@ while True:
                 sent = sock.sendto(fileContent.encode('utf8'), address)
                 print('file sended')
             else :
-                serverResponse='HTTP/1.1 404 File_Not_Found \r\n\r\n'
+                serverResponse='HTTP/1.1 404 File_Not_Found end'
                 sent = sock.sendto(serverResponse.encode(), address)
             
         else :
-            serverResponse='HTTP/1.1 404 Unknown_Request \r\n\r\n'
+            serverResponse='HTTP/1.1 404 Unknown_Request end'
             sent = sock.sendto(serverResponse.encode(), address)
             
     except Exception as info:
-        serverResponse='HTTP/1.1 505 Internal_Server_Error \r\n\r\n'
+        serverResponse='HTTP/1.1 505 Internal_Server_Error end'
         sent = sock.sendto(serverResponse.encode(), address)
         sock.close()        
