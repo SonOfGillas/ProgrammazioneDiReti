@@ -5,7 +5,6 @@ G.Pau - A. Piroddi
 '''
 
 import socket as sk
-import time
 import os
 
 
@@ -33,6 +32,9 @@ while True:
             data, address = sock.recvfrom(4096)
             print (data.decode('utf8'))
             file.write(data.decode('utf8'))
+            serverResponse='HTTP/1.1 201 File_Uploaded \r\n\r\n'
+            sent = sock.sendto(serverResponse.encode(), address)
+            print('file uploaded')
     
             
         elif request == 'GET list':
@@ -45,27 +47,31 @@ while True:
                 sent = sock.sendto(serverFileList[i].encode('utf8'), address)
                 pass
             
+            serverResponse='HTTP/1.1 200 File_List_Sended \r\n\r\n'
+            sent = sock.sendto(serverResponse.encode(), address)
+            print('file list sended')
+            
         elif request == 'Get file':
             data, address = sock.recvfrom(4096)
-            print (data.decode('utf8'))
             fileFoulder = os.path.join(os.getcwd(), 'file')
             filePath = os.path.join(fileFoulder, data.decode('utf8'))
             
             if os.path.exists(filePath):
-                serverResponse='HTTP/1.1 202 File Found'
+                serverResponse='HTTP/1.1 202 File_Found'
                 sent = sock.sendto(serverResponse.encode(), address)
                 f = open(filePath,'r+')
                 fileContent = f.read()
                 sent = sock.sendto(fileContent.encode('utf8'), address)
+                print('file sended')
             else :
-                serverResponse='HTTP/1.1 404 File Not Found\r\n\r\n'
+                serverResponse='HTTP/1.1 404 File_Not_Found \r\n\r\n'
                 sent = sock.sendto(serverResponse.encode(), address)
             
         else :
-            serverResponse='HTTP/1.1 404 Unknown Request\r\n\r\n'
+            serverResponse='HTTP/1.1 404 Unknown_Request \r\n\r\n'
             sent = sock.sendto(serverResponse.encode(), address)
             
     except Exception as info:
-        serverResponse='HTTP/1.1 505 Internal Server Error\r\n\r\n'
+        serverResponse='HTTP/1.1 505 Internal_Server_Error \r\n\r\n'
         sent = sock.sendto(serverResponse.encode(), address)
         sock.close()        
